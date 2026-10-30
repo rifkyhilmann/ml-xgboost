@@ -16,6 +16,12 @@ class UsulanMutasi extends Model
         'masa_kerja',
         'nilai_skp',
         'hukuman_disiplin',
+        'hasil_kerja',
+        'perilaku_kerja',
+        'kelengkapan_berkas',
+        'bebas_temuan_inspektorat',
+        'tugas_belajar',
+        'kesesuaian_formasi',
     ];
 
     protected function casts(): array

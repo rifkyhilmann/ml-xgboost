@@ -35,10 +35,12 @@
             [
                 'label' => 'Tanggal Lahir',
                 'field' => 'tanggal_lahir',
+                'type' => 'date',
             ],
             [
                 'label' => 'Tanggal Mulai Kerja',
                 'field' => 'tanggal_mulai_kerja',
+                'type' => 'date',
             ],
             [
                 'label' => 'Instansi Asal',
