@@ -68,103 +68,6 @@ def home():
     }
 
 
-@app.get("/model-info")
-def model_info():
-
-    if model is None:
-        raise HTTPException(
-            status_code=500,
-            detail="Model belum berhasil dimuat"
-        )
-
-    # Ambil nama fitur langsung dari model
-    model_features = getattr(
-        model,
-        "feature_names_in_",
-        None
-    )
-
-    # Alternatif mengambil nama fitur dari XGBoost Booster
-    if model_features is None:
-        model_features = model.get_booster().feature_names
-
-    # Jumlah fitur model
-    jumlah_fitur = model.n_features_in_
-
-    # Jika nama fitur tersedia
-    if model_features is not None:
-        model_features = list(model_features)
-
-        # Bandingkan dengan fitur API
-        fitur_sesuai = (
-            model_features == FEATURE_COLUMNS
-        )
-
-        return {
-            "status": "success",
-            "nama_model": type(model).__name__,
-            "jumlah_fitur_model": jumlah_fitur,
-            "jumlah_fitur_api": len(FEATURE_COLUMNS),
-            "fitur_sesuai": fitur_sesuai,
-            "daftar_fitur": [
-                {
-                    "nomor": i + 1,
-                    "nama_kolom": col
-                }
-                for i, col in enumerate(model_features)
-            ]
-        }
-
-    return {
-        "status": "success",
-        "nama_model": type(model).__name__,
-        "jumlah_fitur_model": jumlah_fitur,
-        "jumlah_fitur_api": len(FEATURE_COLUMNS),
-        "fitur_sesuai": None,
-        "daftar_fitur": None,
-        "message": "Nama fitur tidak tersimpan dalam model. Hanya jumlah fitur yang tersedia."
-    }
-
-@app.get("/model-features")
-def model_features():
-
-    if model is None:
-        raise HTTPException(
-            status_code=500,
-            detail="Model belum berhasil dimuat"
-        )
-
-    booster = model.get_booster()
-
-    feature_names = booster.feature_names
-
-    return {
-        "status": "success",
-        "jumlah_fitur": model.n_features_in_,
-        "feature_names": feature_names,
-        "feature_types": booster.feature_types
-    }
-
-
-@app.get("/health")
-def health():
-    return {
-        "status": "success",
-        "message": "API Prediksi Mutasi aktif",
-        "model_loaded": model is not None,
-        "jumlah_fitur": len(FEATURE_COLUMNS),
-        "fitur": FEATURE_COLUMNS
-    }
-
-
-@app.get("/fitur")
-def get_fitur():
-    return {
-        "status": "success",
-        "fitur": FEATURE_COLUMNS
-    }
-
-
 @app.post("/prediksi")
 def prediksi(input_data: PrediksiInput):
 
@@ -240,10 +143,14 @@ def prediksi(input_data: PrediksiInput):
         prob_tidak = probabilitas.get(0, 0.0)
         prob_layak = probabilitas.get(1, 0.0)
 
+        prob_prediksi = probabilitas.get(label, 0.0)
+        prob_prediksi_persen = round(prob_prediksi * 100, 2)
+
         return {
             "status": "success",
             "hasil_prediksi": hasil,
             "label": label,
+            "probabilitas_persen": prob_prediksi_persen,
             "probabilitas": {
                 "tidak_layak": prob_tidak,
                 "layak": prob_layak

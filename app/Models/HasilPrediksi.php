@@ -9,7 +9,7 @@ class HasilPrediksi extends Model
     protected $table = 'hasil_prediksi';
 
     protected $fillable = [
-        'id_usulan',
+        'id_pegawai',
         'tanggal',
         'probabilitas',
         'status',
@@ -23,8 +23,8 @@ class HasilPrediksi extends Model
         ];
     }
 
-    public function usulanMutasi()
+    public function pegawai()
     {
-        return $this->belongsTo(UsulanMutasi::class, 'id_usulan');
+        return $this->belongsTo(Pegawai::class, 'id_pegawai');
     }
 }

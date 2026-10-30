@@ -27,8 +27,8 @@ class Pegawai extends Model
         ];
     }
 
-    public function usulanMutasi()
+    public function hasilPrediksi()
     {
-        return $this->hasMany(UsulanMutasi::class, 'id_pegawai');
+        return $this->hasMany(HasilPrediksi::class, 'id_pegawai');
     }
 }

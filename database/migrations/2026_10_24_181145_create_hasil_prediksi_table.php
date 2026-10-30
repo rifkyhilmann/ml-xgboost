@@ -13,21 +13,15 @@ return new class extends Migration
     {
         Schema::create('hasil_prediksi', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_usulan')
-                ->constrained('usulan_mutasi')
+            $table->foreignId('id_pegawai')
+                ->constrained('pegawai')
                 ->cascadeOnDelete();
-
             $table->dateTime('tanggal');
-
             $table->decimal('probabilitas', 7, 6)
                 ->comment('Probabilitas dalam rentang 0 sampai 1');
-
             $table->string('status', 30)
                 ->comment('Contoh: Layak atau Tidak Layak');
-
             $table->timestamps();
-
-            $table->index(['id_usulan', 'tanggal']);
         });
     }
 
