@@ -23,9 +23,10 @@ class PrediksiController extends Controller
     {
         // 1. Validasi input form
         $validated = $request->validate([
+            'masa_kerja' => 'required|integer|min:0',
             'pegawai_id' => 'required|exists:pegawai,id',
             'hasil_kerja' => 'required|in:Di Bawah Ekspektasi,Sesuai Ekspektasi,Di Atas Ekspektasi',
-            'perilaku_kerja' => 'required|in:Di Bawah Ekspektasi,Sesuai Ekspektasi',
+            'perilaku_kerja' => 'required|in:Di Bawah Ekspektasi,Sesuai Ekspektasi,Di Atas Ekspektasi',
             'kelengkapan_berkas' => 'required|in:Lengkap,Tidak Lengkap',
             'sedang_hukuman_disiplin' => 'required|in:Ya,Tidak',
             'bebas_temuan_inspektorat' => 'required|in:Ya,Tidak',
@@ -37,7 +38,7 @@ class PrediksiController extends Controller
         $pegawai = Pegawai::findOrFail($validated['pegawai_id']);
 
         // 3. Hitung masa kerja berdasarkan tanggal mulai kerja
-        $masaKerja = 3;
+        $masaKerja = $validated['masa_kerja'] ?? 0;
 
         // 4. Bentuk data sesuai fitur model XGBoost
         $data = [

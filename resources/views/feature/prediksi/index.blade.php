@@ -7,7 +7,7 @@
 
         {{-- Card Keterangan --}}
         {{-- Hasil Prediksi --}}
-        @if (session('prediksi_result'))
+        {{-- @if (session('prediksi_result'))
             @php
                 $hasilPrediksi = session('prediksi_result');
             @endphp
@@ -47,6 +47,104 @@
                         <div class="mt-2 text-2xl font-semibold text-zinc-800">
                             {{ number_format($hasilPrediksi['probabilitas'], 2, ',', '.') }}%
                         </div>
+                    </div>
+                </div>
+            </div>
+        @endif --}}
+
+        @if (session('prediksi_result'))
+            @php
+                $hasilPrediksi = session('prediksi_result');
+                $isLayak = $hasilPrediksi['status'] === 'Layak';
+                $probabilitas = $hasilPrediksi['probabilitas'];
+
+                // Menentukan warna tema berdasarkan status
+                $themeColor = $isLayak ? 'green' : 'red';
+            @endphp
+
+            <div class="bg-white border border-zinc-200 shadow-sm rounded-xl overflow-hidden mt-6 animate-fade-in">
+                <!-- Header dengan Nama Pegawai -->
+                <div class="bg-zinc-50 border-b border-zinc-200 px-5 py-4 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-{{ $themeColor }}-100 text-{{ $themeColor }}-600 p-2 rounded-lg">
+                            <i data-lucide="user-check" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-sm font-semibold text-zinc-800 uppercase tracking-wide">Hasil Analisis
+                                Klasifikasi</h2>
+                            <p class="text-xs text-zinc-500 mt-0.5">Pegawai: <span
+                                    class="font-medium text-zinc-700">{{ $hasilPrediksi['pegawai'] }}</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Badge Status Utama -->
+                    <span
+                        class="inline-flex items-center rounded-full bg-{{ $themeColor }}-50 text-{{ $themeColor }}-700 border border-{{ $themeColor }}-200 px-3 py-1 text-sm font-medium">
+                        <i data-lucide="{{ $isLayak ? 'check-circle' : 'x-circle' }}" class="w-4 h-4 mr-1.5"></i>
+                        {{ $hasilPrediksi['status'] }}
+                    </span>
+                </div>
+
+                <div class="p-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <!-- Sisi Kiri: Probabilitas & Progress Bar -->
+                        <div class="rounded-lg border border-zinc-100 bg-zinc-50/50 p-5">
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-sm font-medium text-zinc-600">Tingkat Keyakinan Model</span>
+                                <span
+                                    class="text-2xl font-bold text-zinc-800">{{ number_format($probabilitas, 1, ',', '.') }}%</span>
+                            </div>
+
+                            <!-- Progress Bar -->
+                            <div class="w-full bg-zinc-200 rounded-full h-2.5 mb-4">
+                                <div class="bg-primary-500 h-2.5 rounded-full transition-all duration-1000 ease-out"
+                                    style="width: {{ $probabilitas }}%"></div>
+                            </div>
+
+                            <!-- Actionable Insight / Pesan -->
+                            <div
+                                class="mt-4 p-3 rounded bg-{{ $themeColor }}-50/50 border-l-4 border-{{ $themeColor }}-500">
+                                <p class="text-xs text-zinc-600">
+                                    @if ($isLayak)
+                                        <strong>Rekomendasi:</strong> Pegawai ini memenuhi kriteria kelayakan. Disarankan
+                                        untuk memproses tahap administrasi selanjutnya.
+                                    @else
+                                        <strong>Rekomendasi:</strong> Pegawai belum memenuhi standar kelayakan. Perlu
+                                        dilakukan evaluasi kinerja atau pembinaan lebih lanjut.
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Sisi Kanan: Rangkuman Data Input -->
+                        <div class="rounded-lg border border-zinc-100 p-5">
+                            <span class="text-sm font-medium text-zinc-600 mb-3 block">Berdasarkan Parameter Input:</span>
+                            <div class="flex flex-wrap gap-2">
+                                <!-- Menampilkan Masa Kerja -->
+                                <span
+                                    class="inline-flex items-center px-2.5 py-1 rounded bg-zinc-100 text-zinc-700 text-xs font-medium border border-zinc-200">
+                                    Masa Kerja: {{ $hasilPrediksi['data']['Masa_Kerja'] ?? 0 }} Tahun
+                                </span>
+
+                                <!-- Logika sederhana untuk menampilkan parameter lain yang bernilai 1 (True) -->
+                                @foreach ($hasilPrediksi['data'] as $key => $value)
+                                    @if ($value === 1 && $key !== 'Masa_Kerja')
+                                        @php
+                                            // Merapikan nama key (misal: 'Hasil_Kerja_Di Bawah Ekspektasi' menjadi 'Hasil Kerja: Di Bawah Ekspektasi')
+                                            $cleanLabel = str_replace('_', ' ', $key);
+                                        @endphp
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-1 rounded bg-zinc-100 text-zinc-700 text-xs font-medium border border-zinc-200">
+                                            {{ $cleanLabel }}
+                                        </span>
+                                    @endif
+                                @endforeach
+                            </div>
+                            <p class="text-[10px] text-zinc-400 mt-3">*Parameter di atas adalah fitur yang diolah oleh model
+                                XGBoost.</p>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -119,11 +217,19 @@
                             required>
                             <option value="">Pilih Pegawai</option>
                             @foreach ($pegawai as $item)
-                                <option value="{{ $item->id }}" {{ old('pegawai_id') == $item->id ? 'selected' : '' }}>
+                                <option value="{{ $item->id }}"
+                                    {{ old('pegawai_id') == $item->id ? 'selected' : '' }}>
                                     {{ $item->nama }}
                                 </option>
                             @endforeach
                         </select>
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs">Masa Kerja</span>
+                        <input type="number" name="masa_kerja"
+                            class="w-full px-4 py-2.5 border border-zinc-200 rounded-lg focus:outline-none text-sm"
+                            placeholder="Masukkan Masa Kerja (Tahun)" value="{{ old('masa_kerja') }}" required>
                     </div>
 
                     <div class="flex flex-col gap-1">
@@ -136,7 +242,8 @@
                                 {{ old('hasil_kerja') == 'Di Bawah Ekspektasi' ? 'selected' : '' }}>Di Bawah Ekspektasi
                             </option>
                             <option value="Sesuai Ekspektasi"
-                                {{ old('hasil_kerja') == 'Sesuai Ekspektasi' ? 'selected' : '' }}>Sesuai Ekspektasi</option>
+                                {{ old('hasil_kerja') == 'Sesuai Ekspektasi' ? 'selected' : '' }}>Sesuai Ekspektasi
+                            </option>
                             <option value="Di Atas Ekspektasi"
                                 {{ old('hasil_kerja') == 'Di Atas Ekspektasi' ? 'selected' : '' }}>Di Atas Ekspektasi
                             </option>
@@ -154,6 +261,9 @@
                             </option>
                             <option value="Sesuai Ekspektasi"
                                 {{ old('perilaku_kerja') == 'Sesuai Ekspektasi' ? 'selected' : '' }}>Sesuai Ekspektasi
+                            </option>
+                            <option value="Di Atas Ekspektasi"
+                                {{ old('perilaku_kerja') == 'Di Atas Ekspektasi' ? 'selected' : '' }}>Di Atas Ekspektasi
                             </option>
                         </select>
                     </div>
@@ -215,7 +325,8 @@
                             class="w-full px-4 py-2.5 border border-zinc-200 rounded-lg focus:outline-none text-sm"
                             required>
                             <option value="">Pilih Kesesuaian</option>
-                            <option value="Sesuai" {{ old('kesesuaian_formasi_abk') == 'Sesuai' ? 'selected' : '' }}>Sesuai
+                            <option value="Sesuai" {{ old('kesesuaian_formasi_abk') == 'Sesuai' ? 'selected' : '' }}>
+                                Sesuai
                             </option>
                             <option value="Tidak Sesuai"
                                 {{ old('kesesuaian_formasi_abk') == 'Tidak Sesuai' ? 'selected' : '' }}>Tidak Sesuai

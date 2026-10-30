@@ -28,6 +28,7 @@
             [
                 'label' => 'Status Prediksi',
                 'field' => 'status',
+                'type'  => 'status',
             ],
         ]"
 

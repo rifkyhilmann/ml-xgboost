@@ -45,19 +45,19 @@
                     [
                         'label' => 'Master Data',
                         'icon' => 'folder-kanban',
-                        'role' => 'admin,superadmin',
+                        'role' => 'superadmin',
                         'children' => [
                             [
                                 'label' => 'Pengguna',
                                 'route' => 'kelola-pengguna.index',
                                 'icon' => 'users',
-                                'role' => 'admin,superadmin',
+                                'role' => 'superadmin',
                             ],
                             [
                                 'label' => 'Pegawai',
                                 'route' => 'kelola-pegawai.index',
                                 'icon' => 'contact-round',
-                                'role' => 'admin,superadmin',
+                                'role' => 'superadmin',
                             ],
                         ],
                     ],
