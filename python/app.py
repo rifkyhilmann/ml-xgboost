@@ -117,12 +117,14 @@ def prediksi(input_data: PrediksiInput):
                         detail=f"Fitur {col} harus bernilai 0 atau 1"
                     )
 
-        # Konversi fitur menjadi numerik
+        # Konversi tipe data agar sama persis dengan X_train di Google Colab
         for col in FEATURE_COLUMNS:
-            df_input[col] = pd.to_numeric(
-                df_input[col],
-                errors="raise"
-            )
+            if col == "Masa_Kerja":
+        # Hanya Masa_Kerja yang bertipe numerik (integer)
+                df_input[col] = df_input[col].astype(int)
+            else:
+        # Sisanya wajib dikonversi menjadi tipe boolean (True/False)
+                df_input[col] = df_input[col].astype(bool)
 
         # Prediksi kelas
         pred_res = model.predict(df_input)
