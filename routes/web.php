@@ -5,6 +5,7 @@ use App\Http\Controllers\HasilPrediksiController;
 use App\Http\Controllers\KelolaPegawaiController;
 use App\Http\Controllers\KelolaUsersController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PrediksiController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,7 +27,16 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/prediksi', [PrediksiController::class, 'index'])->name('prediksi');
     Route::post('/prediksi', [PrediksiController::class, 'create'])->name('prediksi.create');
-    
-    
+
+
     Route::get('/hasil-prediksi', [HasilPrediksiController::class, 'index'])->name('hasil-prediksi');
+
+
+    Route::prefix('laporan')->name('laporan.')->group(function () {
+        Route::get('/', [LaporanController::class, 'index'])
+            ->name('index');
+
+        Route::get('/cetak', [LaporanController::class, 'cetak'])
+            ->name('cetak');
+    });
 });
