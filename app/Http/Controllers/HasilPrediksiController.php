@@ -17,7 +17,16 @@ class HasilPrediksiController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
 
-            $query->where('status', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+
+                // Cari berdasarkan nama pegawai
+                $q->whereHas('pegawai', function ($pegawai) use ($search) {
+                    $pegawai->where('nama', 'like', "%{$search}%");
+                })
+
+                    // Cari berdasarkan status prediksi
+                    ->orWhere('status', 'like', "%{$search}%");
+            });
         }
 
         // Filter berdasarkan status
