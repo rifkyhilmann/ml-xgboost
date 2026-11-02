@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\HasilPrediksi;
+use App\Models\Pegawai;
 use Illuminate\Http\Request;
 
 class HasilPrediksiController extends Controller
@@ -24,11 +25,13 @@ class HasilPrediksiController extends Controller
             $query->where('status', $request->status);
         }
 
+        $pegawai = Pegawai::orderBy('nama')->get();
+
         $data = $query
             ->latest('tanggal')
             ->paginate(10)
             ->withQueryString();
 
-        return view('feature.hasil-prediksi.index', compact('data'));
+        return view('feature.hasil-prediksi.index', compact('data', 'pegawai'));
     }
 }

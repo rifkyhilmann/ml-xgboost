@@ -14,19 +14,22 @@ class IndexTable extends Component
     public Paginator $datas;
     public array $actions;
     public array $filters;
+    public string $cetak;
 
     public function __construct(
         array $columns,
         array $breadcrumbs  = [],
         Paginator $datas,
         array $actions = [],
-        array $filters = []
+        array $filters = [],
+        string $cetak = ''
     ) {
         $this->columns = $columns;
         $this->breadcrumbs = $breadcrumbs;
         $this->datas = $datas;
         $this->actions = $actions;
         $this->filters = $filters;
+        $this->cetak = $cetak;
     }
 
 

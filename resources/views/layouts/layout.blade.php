@@ -74,12 +74,6 @@
                         'role' => 'admin,superadmin',
                     ],
                     [
-                        'label' => 'Laporan',
-                        'route' => 'laporan.index',
-                        'icon' => 'file',
-                        'role' => 'admin,superadmin',
-                    ],
-                    [
                         'label' => 'Logout',
                         'route' => 'logout',
                         'icon' => 'log-out',

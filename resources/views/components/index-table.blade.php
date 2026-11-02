@@ -41,12 +41,25 @@
                     <h2 class="text-sm font-semibold text-zinc-800 tracking-tight">Kriteria Pencarian</h2>
                 </div>
 
-                {{-- Tombol Reset dipindah ke header agar lebih rapi --}}
-                <a href="{{ url()->current() }}"
-                    class="text-xs font-medium text-zinc-500 hover:text-zinc-900 transition-colors flex items-center gap-1.5 px-2 py-1 rounded hover:bg-zinc-200/50">
-                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-                    Reset Filter
-                </a>
+                <div class="flex items-center gap-2">
+                    @if (!empty($cetak))
+                        <a href="{{ $cetak }}{{ str_contains($cetak, '?') ? '&' : '?' }}{{ http_build_query(request()->query()) }}"
+                            target="_blank"
+                            class="text-xs font-medium text-primary-600 hover:text-primary-700 transition-colors flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg hover:bg-primary-50">
+                            <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                            Cetak
+                        </a>
+                    @endif
+                    
+                    {{-- Tombol Reset dipindah ke header agar lebih rapi --}}
+                    <a href="{{ url()->current() }}"
+                        class="text-xs font-medium text-zinc-500 hover:text-zinc-900 transition-colors flex items-center gap-1.5 px-2 py-1 rounded hover:bg-zinc-200/50">
+                        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                        Reset Filter
+                    </a>
+
+                </div>
+
             </div>
 
             {{-- CONTENT GRID --}}
