@@ -33,7 +33,7 @@
             >
 
             <h1 class="text-lg font-bold tracking-tight text-zinc-900 mt-2">
-                BPKSM Majelengka
+                BKPSDM Majalengka
             </h1>
         </div>
 
